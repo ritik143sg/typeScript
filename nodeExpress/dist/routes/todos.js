@@ -7,15 +7,17 @@ router.get("/", (req, res) => {
     res.status(201).json({ msg: "All todos", todos: todos });
 });
 router.post("/todo", (req, res) => {
+    const body = req.body;
     const newTodo = {
         id: new Date().toISOString(),
-        text: req.body.text,
+        text: body.text,
     };
     todos.push(newTodo);
     res.status(201).json({ msg: "Todo added", todo: newTodo });
 });
 router.delete("/deleteTodo/:id", (req, res) => {
-    const id = req.params.id;
+    const params = req.params;
+    const id = params.id;
     let flag = 0;
     todos = todos.filter((todo) => {
         if (todo.id !== id) {
@@ -31,7 +33,9 @@ router.delete("/deleteTodo/:id", (req, res) => {
     res.status(201).json({ msg: "Todo deleted" });
 });
 router.patch("/updateTodo/:id", (req, res) => {
-    const id = req.params.id;
+    const params = req.params;
+    const body = req.body;
+    const id = params.id;
     let flag = 0;
     todos = todos.filter((todo) => {
         if (todo.id !== id) {
@@ -39,7 +43,7 @@ router.patch("/updateTodo/:id", (req, res) => {
         }
         else {
             flag = 1;
-            todo.text = req.body.text;
+            todo.text = body.text;
             return todo;
         }
     });

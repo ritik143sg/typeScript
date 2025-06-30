@@ -3,6 +3,13 @@ import { Router } from "express";
 import { Todo } from "../models/todo";
 
 let todos: Todo[] = [];
+type requestBody = {
+  text: string;
+};
+
+type requestParams = {
+  id: string;
+};
 
 const router = Router();
 
@@ -11,9 +18,11 @@ router.get("/", (req, res) => {
 });
 
 router.post("/todo", (req, res) => {
+  const body = req.body as requestBody;
+
   const newTodo: Todo = {
     id: new Date().toISOString(),
-    text: req.body.text,
+    text: body.text,
   };
 
   todos.push(newTodo);
@@ -21,7 +30,8 @@ router.post("/todo", (req, res) => {
 });
 
 router.delete("/deleteTodo/:id", (req, res) => {
-  const id: string = req.params.id;
+  const params = req.params as requestParams;
+  const id: string = params.id;
   let flag = 0;
 
   todos = todos.filter((todo) => {
@@ -39,7 +49,9 @@ router.delete("/deleteTodo/:id", (req, res) => {
 });
 
 router.patch("/updateTodo/:id", (req, res) => {
-  const id: string = req.params.id;
+  const params = req.params as requestParams;
+  const body = req.body as requestBody;
+  const id: string = params.id;
   let flag = 0;
 
   todos = todos.filter((todo) => {
@@ -47,7 +59,7 @@ router.patch("/updateTodo/:id", (req, res) => {
       return todo;
     } else {
       flag = 1;
-      todo.text = req.body.text;
+      todo.text = body.text;
       return todo;
     }
   });
